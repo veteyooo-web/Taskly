@@ -1,7 +1,10 @@
 """Команда заполнения базы демонстрационными данными: python manage.py seed_demo"""
+import json
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
@@ -14,6 +17,29 @@ from apps.reviews.models import Review
 from apps.users.models import Notification, PortfolioItem, User
 
 DEFAULT_PASSWORD = "Taskly2026"
+
+# Файл-реестр реально созданных демо-логинов. Нужен, чтобы --flush корректно
+# удалял аккаунты, созданные в прошлых запусках с другими логинами.
+DEMO_USERS_FILE = Path(settings.BASE_DIR) / ".demo_users.json"
+
+
+def _read_tracked_usernames():
+    try:
+        data = json.loads(DEMO_USERS_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    return [name for name in data if isinstance(name, str)]
+
+
+def _write_tracked_usernames(names):
+    try:
+        DEMO_USERS_FILE.write_text(
+            json.dumps(sorted(names), ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    except OSError:
+        pass  # реестр — лишь помощь для --flush, на данные он не влияет
+
 
 CATEGORIES = [
     ("Веб-разработка", "Сайты, веб-приложения, интернет-магазины на Django и не только."),
@@ -119,16 +145,50 @@ class Command(BaseCommand):
         parser.add_argument(
             "--flush",
             action="store_true",
-            help="Удалить ранее созданные демо-данные перед заполнением",
+            help=(
+                "Удалить ранее созданные демо-данные перед заполнением. "
+                "ВНИМАНИЕ: удаляет все заказы, отклики, проекты, отзывы и сообщения "
+                "(не только демо). При переименованных логах передавайте все "
+                "---user флаги сразу, иначе старые демо-аккаунты останутся в базе."
+            ),
+        )
+        parser.add_argument(
+            "--admin-user",
+            default=None,
+            help="Переопределить логин админа (по умолчанию: admin)",
+        )
+        parser.add_argument(
+            "--customer-user",
+            default=None,
+            help="Переопределить логин заказчика (по умолчанию: boss_anna)",
+        )
+        parser.add_argument(
+            "--freelancer-user",
+            default=None,
+            help="Переопределить логин фрилансера (по умолчанию: devmax)",
         )
 
     @transaction.atomic
     def handle(self, *args, **options):
+        # Маппинг: {ключ_в_словаре: новый_username}
+        renames = {}
+        if options["admin_user"]:
+            renames["admin"] = options["admin_user"]
+        if options["customer_user"]:
+            renames["boss_anna"] = options["customer_user"]
+        if options["freelancer_user"]:
+            renames["devmax"] = options["freelancer_user"]
+
         if options["flush"]:
-            self._flush()
+            self._flush(renames)
 
         categories = self._create_categories()
-        users = self._create_users(options["password"])
+        users = self._create_users(options["password"], renames)
+        # Запоминаем реально использованные логины, чтобы будущий --flush
+        # удалил и эти аккаунты тоже, даже если имена снова поменяются.
+        tracked = set(_read_tracked_usernames())
+        tracked.update(user.username for user in users.values())
+        _write_tracked_usernames(tracked)
         orders = self._create_orders(categories, users)
         applications = self._create_applications(orders, users)
         projects = self._create_projects(applications, orders, users)
@@ -138,10 +198,17 @@ class Command(BaseCommand):
         self._create_favorites(orders, users)
         self._create_notifications(orders, applications, users)
 
+        # Формируем строку логина для вывода
+        def uname(key):
+            return renames.get(key, key)
+
         self.stdout.write(self.style.SUCCESS("Демо-данные созданы."))
-        self.stdout.write(f"Админ: admin / {options['password']}  (http://localhost:8000/admin/)")
-        self.stdout.write(f"Заказчик: boss_anna / {options['password']}")
-        self.stdout.write(f"Фрилансер: devmax / {options['password']}")
+        self.stdout.write(
+            f"Админ: {uname('admin')} / {options['password']}  "
+            f"(http://localhost:8000/admin/)"
+        )
+        self.stdout.write(f"Заказчик: {uname('boss_anna')} / {options['password']}")
+        self.stdout.write(f"Фрилансер: {uname('devmax')} / {options['password']}")
         self.stdout.write(
             "Записей: пользователей %s, заказов %s, откликов %s, проектов %s, отзывов %s"
             % (
@@ -154,8 +221,15 @@ class Command(BaseCommand):
         )
 
     # ------------------------------------------------------------------ #
-    def _flush(self):
+    def _flush(self, renames=None):
         demo_names = [name for name, *_ in CUSTOMERS] + [name for name, *_ in FREELANCERS]
+        demo_names.append("admin")
+        if renames:
+            demo_names.extend(renames.values())
+        # Добавляем логины, сохранённые прошлыми запусками (с другими именами).
+        demo_names.extend(_read_tracked_usernames())
+        # Убираем дубликаты для фильтра
+        demo_names = list(dict.fromkeys(demo_names))
         Review.objects.all().delete()
         Message.objects.all().delete()
         Conversation.objects.all().delete()
@@ -178,11 +252,18 @@ class Command(BaseCommand):
         self.stdout.write(f"Категории: {len(result)}")
         return result
 
-    def _create_users(self, password):
+    def _create_users(self, password, renames=None):
+        """Создаёт демо-пользователей.
+
+        Ключи словаря `users` всегда оригинальные имена из CUSTOMERS/FREELANCERS,
+        чтобы связи в остальных методах работали без изменений. Переопределение
+        логина (renames) меняет только поле username в базе.
+        """
         users = {}
+        renames = renames or {}
 
         admin, created = User.objects.get_or_create(
-            username="admin",
+            username=renames.get("admin", "admin"),
             defaults={
                 "first_name": "Администратор",
                 "last_name": "Taskly",
@@ -201,7 +282,7 @@ class Command(BaseCommand):
 
         for username, first_name, last_name, email, city, bio in CUSTOMERS:
             user, created = User.objects.get_or_create(
-                username=username,
+                username=renames.get(username, username),
                 defaults={
                     "first_name": first_name,
                     "last_name": last_name,
@@ -218,7 +299,7 @@ class Command(BaseCommand):
 
         for username, first_name, last_name, email, city, skills, bio in FREELANCERS:
             user, created = User.objects.get_or_create(
-                username=username,
+                username=renames.get(username, username),
                 defaults={
                     "first_name": first_name,
                     "last_name": last_name,

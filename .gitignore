@@ -35,3 +35,6 @@ Thumbs.db
 # Логи
 *.log
 logs/
+
+# Реестр демо-пользователей (сторона seed_demo)
+.demo_users.json
