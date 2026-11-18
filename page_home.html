@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Taskly — находите фрилансеров и заказы</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/favicon.svg" type="image/svg+xml">
+</head>
+<body class="">
+
+<header class="header">
+    <div class="container header__inner">
+        <a class="logo" href="/">
+            <span class="logo__mark">T</span>
+            <span class="logo__text">Taskly</span>
+        </a>
+
+        <nav class="nav" id="main-nav">
+            <a class="nav__link" href="/orders/">Заказы</a>
+            <a class="nav__link" href="/orders/categories/">Категории</a>
+            <a class="nav__link" href="/reviews/">Отзывы</a>
+            
+        </nav>
+
+        <div class="header__actions">
+            
+                <a class="btn btn--ghost" href="/accounts/login/">Войти</a>
+                <a class="btn btn--primary" href="/register/">Регистрация</a>
+            
+        </div>
+    </div>
+</header>
+
+
+
+<main class="main">
+    
+<section class="hero">
+    <div class="container hero__inner">
+        <div class="hero__content">
+            <h1 class="hero__title">Биржа фриланс-заказов <span class="accent">Taskly</span></h1>
+            <p class="hero__text">
+                Заказчики публикуют проекты и выбирают исполнителей из откликов с ценой и сроком.
+                Фрилансеры находят задачи и работают над проектами напрямую.
+            </p>
+            <div class="hero__actions">
+                
+                    <a class="btn btn--primary btn--lg" href="/register/">Начать бесплатно</a>
+                    <a class="btn btn--ghost btn--lg" href="/orders/">Посмотреть заказы</a>
+                
+            </div>
+
+            <dl class="stats">
+                <div class="stats__item">
+                    <dt class="stats__label">Открытых заказов</dt>
+                    <dd class="stats__value">9</dd>
+                </div>
+                <div class="stats__item">
+                    <dt class="stats__label">Фрилансеров</dt>
+                    <dd class="stats__value">5</dd>
+                </div>
+                <div class="stats__item">
+                    <dt class="stats__label">Завершённых проектов</dt>
+                    <dd class="stats__value">2</dd>
+                </div>
+                <div class="stats__item">
+                    <dt class="stats__label">Отзывов</dt>
+                    <dd class="stats__value">4</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="hero__card card">
+            <h2 class="card__title">Как это работает</h2>
+            <ol class="steps">
+                <li><strong>Заказчик</strong> создаёт заказ: категория, бюджет, срок.</li>
+                <li><strong>Фрилансер</strong> отправляет отклик с ценой и сроком.</li>
+                <li>Заказчик принимает отклик — создаётся <strong>проект</strong>.</li>
+                <li>После сдачи стороны обмениваются <strong>отзывами</strong> и рейтингом.</li>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section__head">
+        <h2 class="section__title">Категории</h2>
+        <a class="link-arrow" href="/orders/categories/">Все категории</a>
+    </div>
+    <div class="grid grid--categories">
+        
+            <a class="card card--link category-card" href="/orders/?category=1">
+                <span class="category-card__name">Веб-разработка</span>
+                <span class="category-card__count">2 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=2">
+                <span class="category-card__name">Дизайн и графика</span>
+                <span class="category-card__count">2 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=4">
+                <span class="category-card__name">Тексты и переводы</span>
+                <span class="category-card__count">2 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=6">
+                <span class="category-card__name">Данные и аналитика</span>
+                <span class="category-card__count">1 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=3">
+                <span class="category-card__name">Мобильные приложения</span>
+                <span class="category-card__count">1 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=7">
+                <span class="category-card__name">Техническая поддержка</span>
+                <span class="category-card__count">1 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=5">
+                <span class="category-card__name">Маркетинг и реклама</span>
+                <span class="category-card__count">0 заказов</span>
+            </a>
+        
+            <a class="card card--link category-card" href="/orders/?category=8">
+                <span class="category-card__name">Обучение и курсы</span>
+                <span class="category-card__count">0 заказов</span>
+            </a>
+        
+    </div>
+</section>
+
+<section class="container section">
+    <div class="section__head">
+        <h2 class="section__title">Свежие заказы</h2>
+        <a class="link-arrow" href="/orders/">Все заказы</a>
+    </div>
+    <div class="grid grid--orders">
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/9/">Настройка VPS и резервных копий</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Настройка VPS и резервных копий.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пра…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Техническая поддержка</span>
+        <span class="tag tag--light">Linux</span><span class="tag tag--light">Nginx</span><span class="tag tag--light">Docker</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">12,000 – 20,000 ₽</span>
+        <span class="order-card__meta">
+            до 25.11.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/8/">Дашборд продаж в Excel и Python</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Дашборд продаж в Excel и Python.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пра…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Данные и аналитика</span>
+        <span class="tag tag--light">Python</span><span class="tag tag--light">pandas</span><span class="tag tag--light">SQL</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">30,000 – 55,000 ₽</span>
+        <span class="order-card__meta">
+            до 13.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/7/">Перевод описаний товаров (EN -&gt; RU)</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Перевод описаний товаров (EN -&gt; RU).
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Тексты и переводы</span>
+        <span class="tag tag--light">Перевод</span><span class="tag tag--light">редактура</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">10,000 – 18,000 ₽</span>
+        <span class="order-card__meta">
+            до 28.11.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/6/">Серия SEO-статей для магазина продуктов</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Серия SEO-статей для магазина продуктов.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Вн…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Тексты и переводы</span>
+        <span class="tag tag--light">Копирайтинг</span><span class="tag tag--light">SEO</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">20,000 – 35,000 ₽</span>
+        <span class="order-card__meta">
+            до 08.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/5/">Приложение для трекинга тренировок (Android)</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Приложение для трекинга тренировок (Android).
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Мобильные приложения</span>
+        <span class="tag tag--light">Kotlin</span><span class="tag tag--light">Android</span><span class="tag tag--light">Firebase</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">90,000 – 150,000 ₽</span>
+        <span class="order-card__meta">
+            до 02.01.2027 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/4/">UI-кит для мобильного приложения</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">UI-кит для мобильного приложения.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пр…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Дизайн и графика</span>
+        <span class="tag tag--light">Figma</span><span class="tag tag--light">UI/UX</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">25,000 – 45,000 ₽</span>
+        <span class="order-card__meta">
+            до 06.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+    </div>
+</section>
+
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>Taskly</strong> — учебный проект биржи фриланс-заказов.
+        </div>
+        <nav class="footer__nav">
+            <a href="/orders/">Заказы</a>
+            <a href="/orders/categories/">Категории</a>
+            <a href="/reviews/">Отзывы</a>
+            <a href="/register/">Регистрация</a>
+        </nav>
+        <div class="footer__copy">© 2026 Igor / Taskly</div>
+    </div>
+</footer>
+
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>

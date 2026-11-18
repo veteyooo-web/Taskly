@@ -3,12 +3,33 @@
 
 Значения читаются из файла .env в корне проекта (если он существует)
 и из переменных окружения — переменные окружения имеют приоритет.
+
+В режиме единого EXE-файла (PyInstaller, sys.frozen) ресурсы — шаблоны и
+статика — берутся из временной распаковки (_MEIPASS), а все записываемые
+данные (база, media, секреты) складываются в каталог TASKLY_HOME
+(по умолчанию %LOCALAPPDATA%\\Taskly), чтобы EXE можно было держать
+в любой папке без прав записи в неё.
 """
 import os
+import sys
 from pathlib import Path
 
-# Базовый путь проекта: Fleek/
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Режим единого EXE (PyInstaller)
+FROZEN = getattr(sys, "frozen", False)
+
+if FROZEN:
+    # Только что прочитанное (шаблоны, статика) — внутри распакованного архива
+    RESOURCES_DIR = Path(sys._MEIPASS)
+    # Записываемое (БД, media, секреты) — в каталоге пользователя
+    _home = os.environ.get("TASKLY_HOME")
+    if not _home:
+        _local = os.environ.get("LOCALAPPDATA")
+        _home = str(Path(_local) / "Taskly") if _local else str(Path.home() / ".taskly")
+    BASE_DIR = Path(_home)
+    BASE_DIR.mkdir(parents=True, exist_ok=True)
+else:
+    RESOURCES_DIR = Path(__file__).resolve().parent.parent
+    BASE_DIR = RESOURCES_DIR
 
 
 def load_env_file(path=None):
@@ -55,7 +76,21 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     "django-insecure-dev-key-измените-её-в-продакшене",
 )
-DEBUG = env_bool("DJANGO_DEBUG", True)
+if FROZEN and "DJANGO_SECRET_KEY" not in os.environ:
+    # В EXE-режиме генерируем один стабильный ключ и храним его рядом с БД,
+    # иначе после каждого перезапуска слетают сессии и CSRF-токены.
+    _key_file = BASE_DIR / ".secret_key"
+    if _key_file.exists():
+        SECRET_KEY = _key_file.read_text(encoding="utf-8").strip()
+    else:
+        from django.core.management.utils import get_random_secret_key
+
+        SECRET_KEY = get_random_secret_key()
+        try:
+            _key_file.write_text(SECRET_KEY, encoding="utf-8")
+        except OSError:
+            pass
+DEBUG = env_bool("DJANGO_DEBUG", not FROZEN)
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 
 INSTALLED_APPS = [
@@ -76,6 +111,16 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+]
+
+# WhiteNoise — раздаёт статику напрямую, без отдельного веб-сервера.
+# Нужен в EXE-режиме (waitress не имеет встроенной раздачи static).
+if FROZEN:
+    MIDDLEWARE.append("whitenoise.middleware.WhiteNoiseMiddleware")
+    # Отдаём файлы прямо из каталога static/ внутри архива без collectstatic
+    WHITENOISE_USE_FINDERS = True
+
+MIDDLEWARE += [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -89,7 +134,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [RESOURCES_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -165,7 +210,7 @@ USE_TZ = True
 # Static & Media
 # ------------------------------------------------------------------ #
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [RESOURCES_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
@@ -178,8 +223,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ------------------------------------------------------------------ #
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", True)
-    CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", True)
+    # В EXE-режиме сайт доступен по http://127.0.0.1, поэтому secure-куки
+    # по умолчанию выключены (иначе браузер не принял бы сессии).
+    SESSION_COOKIE_SECURE = env_bool("SESSION_COOKIE_SECURE", not FROZEN)
+    CSRF_COOKIE_SECURE = env_bool("CSRF_COOKIE_SECURE", not FROZEN)
     SECURE_HSTS_SECONDS = int(env("SECURE_HSTS_SECONDS", "0"))
 
 X_FRAME_OPTIONS = "DENY"

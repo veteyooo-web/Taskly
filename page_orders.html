@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Заказы — Taskly</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/favicon.svg" type="image/svg+xml">
+</head>
+<body class="">
+
+<header class="header">
+    <div class="container header__inner">
+        <a class="logo" href="/">
+            <span class="logo__mark">T</span>
+            <span class="logo__text">Taskly</span>
+        </a>
+
+        <nav class="nav" id="main-nav">
+            <a class="nav__link" href="/orders/">Заказы</a>
+            <a class="nav__link" href="/orders/categories/">Категории</a>
+            <a class="nav__link" href="/reviews/">Отзывы</a>
+            
+        </nav>
+
+        <div class="header__actions">
+            
+                <a class="btn btn--ghost" href="/accounts/login/">Войти</a>
+                <a class="btn btn--primary" href="/register/">Регистрация</a>
+            
+        </div>
+    </div>
+</header>
+
+
+
+<main class="main">
+    
+<div class="container">
+    <div class="page-head">
+        <div>
+            <h1 class="page-title">Фриланс-заказы</h1>
+            <p class="muted">Найдено заказов: 12</p>
+        </div>
+        
+    </div>
+
+    <form class="card filters" method="get">
+        <div class="filters__grid">
+            <div class="filter">
+                <label class="form-label" for="id_q">Поиск</label>
+                <input type="text" name="q" class="field" id="id_q">
+            </div>
+            <div class="filter">
+                <label class="form-label" for="id_category">Категория</label>
+                <select name="category" class="field field--select" id="id_category">
+  <option value="" selected>Все категории</option>
+
+  <option value="1">Веб-разработка</option>
+
+  <option value="6">Данные и аналитика</option>
+
+  <option value="2">Дизайн и графика</option>
+
+  <option value="5">Маркетинг и реклама</option>
+
+  <option value="3">Мобильные приложения</option>
+
+  <option value="8">Обучение и курсы</option>
+
+  <option value="4">Тексты и переводы</option>
+
+  <option value="7">Техническая поддержка</option>
+
+</select>
+            </div>
+            <div class="filter">
+                <label class="form-label" for="id_status">Статус</label>
+                <select name="status" class="field field--select" id="id_status">
+  <option value="" selected>Любой статус</option>
+
+  <option value="draft">Черновик</option>
+
+  <option value="open">Открыт</option>
+
+  <option value="in_progress">В работе</option>
+
+  <option value="completed">Завершён</option>
+
+  <option value="cancelled">Отменён</option>
+
+</select>
+            </div>
+            <div class="filter">
+                <label class="form-label" for="id_min_budget">Бюджет от</label>
+                <input type="number" name="min_budget" min="0" step="1" class="field" id="id_min_budget">
+            </div>
+            <div class="filter">
+                <label class="form-label" for="id_max_budget">Бюджет до</label>
+                <input type="number" name="max_budget" min="0" step="1" class="field" id="id_max_budget">
+            </div>
+            <div class="filter">
+                <label class="form-label" for="id_sort">Сортировка</label>
+                <select name="sort" class="field field--select" id="id_sort">
+  <option value="-created_at">Сначала новые</option>
+
+  <option value="created_at">Сначала старые</option>
+
+  <option value="-budget_max">Сначала дорогие</option>
+
+  <option value="budget_max">Сначала дешёвые</option>
+
+</select>
+            </div>
+        </div>
+        <div class="filters__actions">
+            <button class="btn btn--primary" type="submit">Применить</button>
+            
+        </div>
+    </form>
+
+    <div class="grid grid--orders">
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/12/">Редизайн карточек товара</a>
+        </h3>
+        <span class="status status--completed">Завершён</span>
+    </div>
+
+    <p class="order-card__desc">Редизайн карточек товара.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести правки и п…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Дизайн и графика</span>
+        <span class="tag tag--light">Figma</span><span class="tag tag--light">UI</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">18,000 – 28,000 ₽</span>
+        <span class="order-card__meta">
+            до 30.11.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/11/">Интеграция платёжного шлюза</a>
+        </h3>
+        <span class="status status--completed">Завершён</span>
+    </div>
+
+    <p class="order-card__desc">Интеграция платёжного шлюза.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести правки …</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Веб-разработка</span>
+        <span class="tag tag--light">Django</span><span class="tag tag--light">API</span><span class="tag tag--light">платежи</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">35,000 – 60,000 ₽</span>
+        <span class="order-card__meta">
+            до 03.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/10/">Курс по Django для начинающих</a>
+        </h3>
+        <span class="status status--in_progress">В работе</span>
+    </div>
+
+    <p class="order-card__desc">Курс по Django для начинающих.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести правк…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Обучение и курсы</span>
+        <span class="tag tag--light">Python</span><span class="tag tag--light">Django</span><span class="tag tag--light">методология</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">50,000 – 90,000 ₽</span>
+        <span class="order-card__meta">
+            до 28.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/9/">Настройка VPS и резервных копий</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Настройка VPS и резервных копий.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пра…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Техническая поддержка</span>
+        <span class="tag tag--light">Linux</span><span class="tag tag--light">Nginx</span><span class="tag tag--light">Docker</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">12,000 – 20,000 ₽</span>
+        <span class="order-card__meta">
+            до 25.11.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/8/">Дашборд продаж в Excel и Python</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Дашборд продаж в Excel и Python.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пра…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Данные и аналитика</span>
+        <span class="tag tag--light">Python</span><span class="tag tag--light">pandas</span><span class="tag tag--light">SQL</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">30,000 – 55,000 ₽</span>
+        <span class="order-card__meta">
+            до 13.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/7/">Перевод описаний товаров (EN -&gt; RU)</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Перевод описаний товаров (EN -&gt; RU).
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Тексты и переводы</span>
+        <span class="tag tag--light">Перевод</span><span class="tag tag--light">редактура</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">10,000 – 18,000 ₽</span>
+        <span class="order-card__meta">
+            до 28.11.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/6/">Серия SEO-статей для магазина продуктов</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Серия SEO-статей для магазина продуктов.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Вн…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Тексты и переводы</span>
+        <span class="tag tag--light">Копирайтинг</span><span class="tag tag--light">SEO</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">20,000 – 35,000 ₽</span>
+        <span class="order-card__meta">
+            до 08.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/5/">Приложение для трекинга тренировок (Android)</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">Приложение для трекинга тренировок (Android).
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Мобильные приложения</span>
+        <span class="tag tag--light">Kotlin</span><span class="tag tag--light">Android</span><span class="tag tag--light">Firebase</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">90,000 – 150,000 ₽</span>
+        <span class="order-card__meta">
+            до 02.01.2027 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+            <article class="card order-card">
+    <div class="order-card__head">
+        <h3 class="order-card__title">
+            <a href="/orders/4/">UI-кит для мобильного приложения</a>
+        </h3>
+        <span class="status status--open">Открыт</span>
+    </div>
+
+    <p class="order-card__desc">UI-кит для мобильного приложения.
+
+Что нужно сделать:
+1. Обсудить детали и зафиксировать требования.
+2. Выполнить работу и показать промежуточный результат.
+3. Внести пр…</p>
+
+    <div class="order-card__tags">
+        <span class="tag">Дизайн и графика</span>
+        <span class="tag tag--light">Figma</span><span class="tag tag--light">UI/UX</span>
+    </div>
+
+    <div class="order-card__footer">
+        <span class="order-card__budget">25,000 – 45,000 ₽</span>
+        <span class="order-card__meta">
+            до 06.12.2026 · откликов 1
+        </span>
+    </div>
+</article>
+
+        
+    </div>
+
+    
+<nav class="pagination" aria-label="Страницы">
+    
+
+    
+        
+            <span class="pagination__item pagination__item--current">1</span>
+        
+    
+        
+            <a class="pagination__item" href="?page=2">2</a>
+        
+    
+
+    
+        <a class="pagination__item" href="?page=2">Вперёд</a>
+    
+</nav>
+
+
+</div>
+
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>Taskly</strong> — учебный проект биржи фриланс-заказов.
+        </div>
+        <nav class="footer__nav">
+            <a href="/orders/">Заказы</a>
+            <a href="/orders/categories/">Категории</a>
+            <a href="/reviews/">Отзывы</a>
+            <a href="/register/">Регистрация</a>
+        </nav>
+        <div class="footer__copy">© 2026 Igor / Taskly</div>
+    </div>
+</footer>
+
+<script src="/static/js/main.js"></script>
+
+</body>
+</html>
